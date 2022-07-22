@@ -4,6 +4,8 @@ import { AppController } from './app.controller';
 import { FirstModule } from './first/first.module';
 import { TodoModule } from './todo/todo.module';
 import { TodoEntity } from './todo/entities/todo.entity';
+import { CvModule } from './cv/cv.module';
+import { CvEntity } from './cv/entites/cv.entity';
 
 @Module({
   imports: [
@@ -16,10 +18,12 @@ import { TodoEntity } from './todo/entities/todo.entity';
       username: 'root',
       password: '',
       database: 'nest21722',
-      entities: [TodoEntity],
+      autoLoadEntities: true,
+      /*       entities: [TodoEntity, CvEntity], */
       synchronize: true,
       logging: true,
     }),
+    CvModule,
   ],
   /*    */
   controllers: [AppController],

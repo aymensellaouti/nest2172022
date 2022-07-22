@@ -5,6 +5,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  Patch,
   Post,
   Put,
   Req,
@@ -16,33 +17,38 @@ import { AddTodoDto } from './dto/add-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { TodoService } from './todo.service';
 import { ValidationPipe } from '@nestjs/common';
+import { TodoEntity } from './entities/todo.entity';
+import { UpdateResult } from 'typeorm';
 
 @Controller('todo')
 export class TodoController {
   constructor(private todoService: TodoService) {}
 
   @Get()
-  getTodos(): Todo[] {
-    return this.todoService.getTodos();
+  getTodos(): Promise<TodoEntity[]> {
+    return this.todoService.findAll();
   }
   @Post()
-  addTodo(@Body() todo: AddTodoDto): Todo {
-    console.log(todo);
-    return this.todoService.addTodo(todo);
+  addTodo(@Body() todo: AddTodoDto): Promise<TodoEntity> {
+    return this.todoService.addTodoDB(todo);
   }
   @Get(':id')
-  getTodoById(@Param('id') id: string): Todo {
-    return this.todoService.getTodoById(id);
+  getTodoById(@Param('id') id: number): Promise<TodoEntity> {
+    return this.todoService.findByid(id);
   }
   @Delete(':id')
-  deleteTodoById(@Param('id') id: string): { count: number } {
-    return this.todoService.deleteTodoById(id);
+  deleteTodoById(@Param('id') id: number): Promise<UpdateResult> {
+    return this.todoService.softDeleteTodoById(id);
+  }
+  @Patch('restore/:id')
+  restoreSoftyDeletedTodo(@Param('id') id: number): Promise<UpdateResult> {
+    return this.todoService.restoreDoftDeletedTodoById(id);
   }
   @Put(':id')
   updateTodoById(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updatedTodo: UpdateTodoDto,
-  ): Todo {
-    return this.todoService.updateTodoById(id, updatedTodo);
+  ): Promise<TodoEntity> {
+    return this.todoService.updateTodoByIdDb(id, updatedTodo);
   }
 }
