@@ -12,6 +12,9 @@ function logHeadersMiddlware(req: Request, res: Response, next: Function) {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: 'http://localhost:4200',
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
